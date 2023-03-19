@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const getChartInfo = async () => {
+const getOrderInfo = async () => {
   const res = await axios('mock_data.json')
 
   if (res.status === 200) {
@@ -10,4 +10,4 @@ const getChartInfo = async () => {
   return null
 }
 
-export default getChartInfo
+export default getOrderInfo
