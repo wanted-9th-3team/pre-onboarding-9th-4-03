@@ -12,6 +12,7 @@ import {
 import getOrderInfo from '../../apis/TableApi'
 import { IOrderData } from '../../Type'
 import Paging from '../../components/Paging'
+import SortData from '../../components/SortData'
 
 function Home() {
   const [orderDataBase, setOrderDataBase] = useState<IOrderData[]>([])
@@ -20,14 +21,24 @@ function Home() {
     const data = await getOrderInfo()
     if (data) {
       setOrderDataBase(
-        data.filter((DataItem: IOrderData) => {
-          const DateData = new Date(DataItem.transaction_time)
-          return (
-            DateData.getFullYear() === 2023 &&
-            DateData.getDate() === 8 &&
-            DateData.getMonth() === 2
-          )
-        })
+        data
+          .filter((DataItem: IOrderData) => {
+            const DateData = new Date(DataItem.transaction_time)
+            return (
+              DateData.getFullYear() === 2023 &&
+              DateData.getDate() === 8 &&
+              DateData.getMonth() === 2
+            )
+          })
+          .sort(function sortASC(a: IOrderData, b: IOrderData) {
+            if (a.id > b.id) {
+              return 1
+            }
+            if (a.id < b.id) {
+              return -1
+            }
+            return 0
+          })
       )
     }
   }
@@ -65,6 +76,11 @@ function Home() {
 
   return (
     <Box>
+      <SortData
+        orderDataBase={orderDataBase}
+        setOrderDataBase={setOrderDataBase}
+      />
+
       <TableContainer>
         <Table size="lg">
           <Thead>
