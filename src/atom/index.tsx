@@ -15,3 +15,9 @@ export const orderData = atom<Ttable[]>({
   default: [],
   // effects_UNSTABLE: [persistAtom],
 })
+
+export const filterNameData = atom<Ttable[]>({
+  key: 'filterNameData',
+  default: [],
+  // effects_UNSTABLE: [persistAtom],
+})
