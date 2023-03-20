@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import './App.css'
