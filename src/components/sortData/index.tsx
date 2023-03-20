@@ -4,15 +4,28 @@ import { useSearchParams } from 'react-router-dom'
 function SortData() {
   const [searchParams, setSearchParams] = useSearchParams()
   const filterParams = searchParams.get('filterParams')
+  const searchNameParams = searchParams.get('searchNameParams')
 
   const sortingHandler = (data: string) => {
-    if (filterParams !== null) {
+    if (filterParams !== null && searchNameParams !== null) {
       searchParams.set('sortParams', data)
       searchParams.set('filterParams', filterParams)
+      searchParams.set('searchNameParams', searchNameParams)
+      setSearchParams(searchParams)
+    } else if (filterParams !== null) {
+      searchParams.set('sortParams', data)
+      searchParams.set('filterParams', filterParams)
+      searchParams.set('searchNameParams', '')
+      setSearchParams(searchParams)
+    } else if (searchNameParams !== null) {
+      searchParams.set('sortParams', data)
+      searchParams.set('filterParams', 'all')
+      searchParams.set('searchNameParams', searchNameParams)
       setSearchParams(searchParams)
     } else {
       searchParams.set('sortParams', data)
       searchParams.set('filterParams', 'all')
+      searchParams.set('searchNameParams', '')
       setSearchParams(searchParams)
     }
   }

@@ -16,11 +16,13 @@ import { IOrderData } from '../../Type'
 import Paging from '../../components/Paging'
 import SortData from '../../components/SortData'
 import FilterIsOrder from '../../components/FilterIsOrder'
+import SearchingName from '../../components/SearchingName'
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
   const filterParams = searchParams.get('filterParams')
   const sortParams = searchParams.get('sortParams')
+  const searchNameParams = searchParams.get('searchNameParams')
 
   const [orderDataBase, setOrderDataBase] = useState<IOrderData[]>([])
 
@@ -83,10 +85,6 @@ function Home() {
     setCurrentPage(page)
   }
 
-  // useEffect(() => {
-  //   setOrderDataBase(orderDataBase)
-  // }, [orderDataBase])
-
   const filterHandler = (data: string) => {
     if (data === 'O') {
       setOrderData(
@@ -147,6 +145,16 @@ function Home() {
     }
   }
 
+  const searchNameHandler = () => {
+    if (searchNameParams !== null) {
+      setOrderData(
+        orderDataBase.filter((DataItem: IOrderData) => {
+          return DataItem.customer_name.includes(searchNameParams)
+        })
+      )
+    }
+  }
+
   useEffect(() => {
     if (filterParams !== null) {
       filterHandler(filterParams)
@@ -158,14 +166,22 @@ function Home() {
     } else {
       console.log('sortParams is null')
     }
+    if (searchNameParams !== null) {
+      searchNameHandler()
+    } else {
+      console.log('searchNameParams is null')
+    }
+
     console.log(filterParams)
     console.log(sortParams)
+    console.log(searchNameParams)
   }, [searchParams])
 
   return (
     <Box>
       <SortData />
       <FilterIsOrder />
+      <SearchingName />
       <TableContainer>
         <Table size="lg">
           <Thead>

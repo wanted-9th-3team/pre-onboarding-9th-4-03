@@ -5,15 +5,28 @@ import { useSearchParams } from 'react-router-dom'
 function FilterIsOrder() {
   const [searchParams, setSearchParams] = useSearchParams()
   const sortParams = searchParams.get('sortParams')
+  const searchNameParams = searchParams.get('searchNameParams')
 
   const filterHandler = (data: string) => {
-    if (sortParams !== null) {
+    if (sortParams !== null && searchNameParams !== null) {
       searchParams.set('filterParams', data)
       searchParams.set('sortParams', sortParams)
+      searchParams.set('searchNameParams', searchNameParams)
+      setSearchParams(searchParams)
+    } else if (sortParams !== null) {
+      searchParams.set('filterParams', data)
+      searchParams.set('sortParams', sortParams)
+      searchParams.set('searchNameParams', '')
+      setSearchParams(searchParams)
+    } else if (searchNameParams !== null) {
+      searchParams.set('filterParams', data)
+      searchParams.set('sortParams', 'sortASC')
+      searchParams.set('searchNameParams', searchNameParams)
       setSearchParams(searchParams)
     } else {
       searchParams.set('filterParams', data)
       searchParams.set('sortParams', 'sortASC')
+      searchParams.set('searchNameParams', '')
       setSearchParams(searchParams)
     }
   }
