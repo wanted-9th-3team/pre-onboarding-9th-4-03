@@ -21,6 +21,7 @@ function App() {
   }
   useEffect(() => {
     dataHandler()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   console.log(tableData)
