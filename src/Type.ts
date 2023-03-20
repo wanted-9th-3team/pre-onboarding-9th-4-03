@@ -12,8 +12,3 @@ export interface IPaging {
   totalCount: number
   handlePageChange: any
 }
-
-export interface ISortData {
-  orderDataBase: IOrderData[]
-  setOrderDataBase: any
-}

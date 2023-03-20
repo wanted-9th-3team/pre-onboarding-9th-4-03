@@ -1,35 +1,21 @@
 import { Box, Button } from '@chakra-ui/react'
-import { ISortData } from '../../Type'
+import { useSearchParams } from 'react-router-dom'
 
-function SortData({ orderDataBase, setOrderDataBase }: ISortData) {
+function SortData() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const filterParams = searchParams.get('filterParams')
+
   const sortingHandler = (data: string) => {
-    if (data === 'orderNumber') {
-      setOrderDataBase(
-        orderDataBase.sort(function sortDESC(a: IOrderData, b: IOrderData) {
-          if (a.id < b.id) {
-            return 1
-          }
-          if (a.id > b.id) {
-            return -1
-          }
-          return 0
-        })
-      )
-    } else if (data === 'orderTime') {
-      setOrderDataBase(
-        orderDataBase.sort(function sortDESC(a: IOrderData, b: IOrderData) {
-          if (a.transaction_time < b.transaction_time) {
-            return 1
-          }
-          if (a.transaction_time > b.transaction_time) {
-            return -1
-          }
-          return 0
-        })
-      )
+    if (filterParams !== null) {
+      searchParams.set('sortParams', data)
+      searchParams.set('filterParams', filterParams)
+      setSearchParams(searchParams)
+    } else {
+      searchParams.set('sortParams', data)
+      searchParams.set('filterParams', 'all')
+      setSearchParams(searchParams)
     }
   }
-
   return (
     <Box>
       <Button

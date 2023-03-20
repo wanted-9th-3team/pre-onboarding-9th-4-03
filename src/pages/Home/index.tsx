@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import {
   Table,
@@ -9,13 +10,21 @@ import {
   TableContainer,
   Box,
 } from '@chakra-ui/react'
+import { useSearchParams } from 'react-router-dom'
 import getOrderInfo from '../../apis/TableApi'
 import { IOrderData } from '../../Type'
 import Paging from '../../components/Paging'
 import SortData from '../../components/SortData'
+import FilterIsOrder from '../../components/FilterIsOrder'
 
 function Home() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const filterParams = searchParams.get('filterParams')
+  const sortParams = searchParams.get('sortParams')
+
   const [orderDataBase, setOrderDataBase] = useState<IOrderData[]>([])
+
+  const [orderData, setOrderData] = useState<IOrderData[]>(orderDataBase)
 
   const getDataBase = async () => {
     const data = await getOrderInfo()
@@ -47,8 +56,8 @@ function Home() {
     getDataBase()
   }, [])
 
-  const [products, setProducts] = useState<IOrderData[]>(orderDataBase)
-  const [totalCount, setTotalCount] = useState(orderDataBase.length)
+  const [products, setProducts] = useState<IOrderData[]>(orderData)
+  const [totalCount, setTotalCount] = useState(orderData.length)
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage] = useState(50)
   const [indexOfLastPost, setIndexOfLastPost] = useState(0)
@@ -56,7 +65,7 @@ function Home() {
   const [currentPosts, setCurrentPosts] = useState<IOrderData[]>([])
 
   useEffect(() => {
-    setProducts(orderDataBase)
+    setProducts(orderData)
     setTotalCount(products.length)
     setIndexOfLastPost(currentPage * postPerPage)
     setIndexOfFirstPost(indexOfLastPost - postPerPage)
@@ -67,20 +76,96 @@ function Home() {
     indexOfFirstPost,
     products,
     postPerPage,
-    orderDataBase,
+    orderData,
   ])
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
 
+  // useEffect(() => {
+  //   setOrderDataBase(orderDataBase)
+  // }, [orderDataBase])
+
+  const filterHandler = (data: string) => {
+    if (data === 'O') {
+      setOrderData(
+        orderDataBase.filter((DataItem: IOrderData) => {
+          return DataItem.status === true
+        })
+      )
+    } else if (data === 'X') {
+      setOrderData(
+        orderDataBase.filter((DataItem: IOrderData) => {
+          return DataItem.status === false
+        })
+      )
+    } else if (data === 'all') {
+      setOrderData(orderDataBase)
+    }
+  }
+
+  const sortingHandler = (data: string) => {
+    if (data === 'orderNumber') {
+      setOrderData(
+        orderDataBase.sort(function sortDESC(a: IOrderData, b: IOrderData) {
+          if (a.id < b.id) {
+            return 1
+          }
+          if (a.id > b.id) {
+            return -1
+          }
+          return 0
+        })
+      )
+    } else if (data === 'orderTime') {
+      setOrderData(
+        orderDataBase.sort(function sortDESC(a: IOrderData, b: IOrderData) {
+          if (a.transaction_time < b.transaction_time) {
+            return 1
+          }
+          if (a.transaction_time > b.transaction_time) {
+            return -1
+          }
+          return 0
+        })
+      )
+    } else if (data === 'sortASC') {
+      setOrderData(
+        orderDataBase.sort(function sortASC(a: IOrderData, b: IOrderData) {
+          if (a.id > b.id) {
+            return 1
+          }
+          if (a.id < b.id) {
+            return -1
+          }
+          return 0
+        })
+      )
+    } else {
+      setOrderData(orderData)
+    }
+  }
+
+  useEffect(() => {
+    if (filterParams !== null) {
+      filterHandler(filterParams)
+    } else {
+      console.log('filterParams is null')
+    }
+    if (sortParams !== null) {
+      sortingHandler(sortParams)
+    } else {
+      console.log('sortParams is null')
+    }
+    console.log(filterParams)
+    console.log(sortParams)
+  }, [searchParams])
+
   return (
     <Box>
-      <SortData
-        orderDataBase={orderDataBase}
-        setOrderDataBase={setOrderDataBase}
-      />
-
+      <SortData />
+      <FilterIsOrder />
       <TableContainer>
         <Table size="lg">
           <Thead>
@@ -93,16 +178,16 @@ function Home() {
               <Th>주문처리상태</Th>
             </Tr>
           </Thead>
-          {currentPosts.map((orderData: IOrderData) => {
+          {currentPosts.map((orderDataItem: IOrderData) => {
             return (
-              <Tbody key={orderData.id}>
+              <Tbody key={orderDataItem.id}>
                 <Tr>
-                  <Td>{orderData.id}</Td>
-                  <Td>{orderData.transaction_time}</Td>
-                  <Td>{orderData.customer_id}</Td>
-                  <Td>{orderData.customer_name}</Td>
-                  <Td>{orderData.currency}</Td>
-                  {orderData.status ? <Td>O</Td> : <Td>X</Td>}
+                  <Td>{orderDataItem.id}</Td>
+                  <Td>{orderDataItem.transaction_time}</Td>
+                  <Td>{orderDataItem.customer_id}</Td>
+                  <Td>{orderDataItem.customer_name}</Td>
+                  <Td>{orderDataItem.currency}</Td>
+                  {orderDataItem.status ? <Td>O</Td> : <Td>X</Td>}
                 </Tr>
               </Tbody>
             )
