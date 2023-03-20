@@ -1,13 +1,13 @@
 import axios from 'axios'
+import { ITable } from '../../Type'
 
-const getChartInfo = async () => {
-  const res = await axios('mock_data.json')
+const getDataTable = async () => {
+  const response = await axios.get<ITable[]>('src/data/mock_data.json')
 
-  if (res.status === 200) {
-    const { response } = res.data
-    return response
+  if (response.status === 200) {
+    return response.data
   }
   return null
 }
 
-export default getChartInfo
+export default getDataTable
