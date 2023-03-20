@@ -11,7 +11,3 @@ export interface IData {
   customer_name: string
   currency: string
 }
-
-export interface ITableInfo {
-  [key: number]: IData
-}
