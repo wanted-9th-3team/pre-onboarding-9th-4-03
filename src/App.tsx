@@ -8,8 +8,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/:filterParams" element={<Home />} />
-        <Route path="/:filterParams/:sortParams" element={<Home />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
