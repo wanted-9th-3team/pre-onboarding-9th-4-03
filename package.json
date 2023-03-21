@@ -13,10 +13,13 @@
     "lint": "eslint --cache ."
   },
   "dependencies": {
+    "antd": "^5.3.1",
     "axios": "^1.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.2"
+    "react-icons": "^4.8.0",
+    "react-router-dom": "^6.8.2",
+    "styled-components": "^5.3.9"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

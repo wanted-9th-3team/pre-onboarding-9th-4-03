@@ -1,4 +1,4 @@
-export type TOrderList = {
+export type TOrderInfo = {
   id: number
   transaction_time: string
   status: boolean
