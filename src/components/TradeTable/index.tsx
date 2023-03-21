@@ -59,6 +59,18 @@ function TradeTable(props: { trade: TradeItem[] }) {
     }
   }
 
+  const getAllSearchParams = () => {
+    let params = {}
+    let isDone = false
+    const nowParams = searchParams.entries()
+    while (!isDone) {
+      const param = nowParams.next()
+      if (param.value) params = { ...params, [param.value[0]]: param.value[1] }
+      isDone = !!param.done
+    }
+    return params
+  }
+
   const searchByName = (inputName: string) => {
     setSearchParams({ ...getAllSearchParams(), name: inputName })
   }
@@ -75,14 +87,6 @@ function TradeTable(props: { trade: TradeItem[] }) {
     }
     result = filterTradeByStatus(result, status)
     return sortTrade(result) as TradeItem[]
-  }
-
-  const getAllSearchParams = () => {
-    let params = {}
-    for (let [key, value] of searchParams.entries()) {
-      params = { ...params, [key]: value }
-    }
-    return params
   }
 
   const iconClickHandler = (typeID: string) => {
