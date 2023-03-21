@@ -1,16 +1,35 @@
-const convertRawDataToChartData = (rawData: any[], type: 'bar' | 'line') => {
-  const convertedData = Object.entries(rawData).reduce((acc, curr) => {
-    const value = curr[1]
-    return [...acc, type === 'bar' ? value.value_bar : value.value_area]
-  }, [] as number[])
+import { ITable } from '../Type'
 
-  return {
-    type,
-    label: type === 'bar' ? 'bar' : 'area',
-    data: convertedData,
-    fill: type !== 'bar',
-    yAxisID: type === 'bar' ? 'y' : 'y2',
+export const tableFilerByStatus = (dataTable: ITable[], status: string) => {
+  if (status === 'true') {
+    return dataTable.filter(data => data.status === true)
   }
+  if (status === 'false') {
+    return dataTable.filter(data => data.status === false)
+  }
+
+  return dataTable
 }
 
-export default convertRawDataToChartData
+export const tableFilerByQuery = (dataTable: ITable[], searchTerm: string) => {
+  if (searchTerm.length === 0) {
+    return dataTable
+  }
+  return dataTable.filter(data =>
+    data.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+}
+
+export const tableSortingHandler = (dataTable: ITable[], sortBy: string) => {
+  if (sortBy === 'time') {
+    return dataTable.sort(
+      (a, b) =>
+        new Date(b.transaction_time).valueOf() -
+        new Date(a.transaction_time).valueOf()
+    )
+  }
+
+  return sortBy === 'id_asc'
+    ? dataTable.sort((a, b) => b.id - a.id)
+    : dataTable.sort((a, b) => a.id - b.id)
+}
