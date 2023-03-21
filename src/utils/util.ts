@@ -1,16 +1,22 @@
-const convertRawDataToChartData = (rawData: any[], type: 'bar' | 'line') => {
-  const convertedData = Object.entries(rawData).reduce((acc, curr) => {
-    const value = curr[1]
-    return [...acc, type === 'bar' ? value.value_bar : value.value_area]
-  }, [] as number[])
+import { useEffect, useRef } from 'react'
 
-  return {
-    type,
-    label: type === 'bar' ? 'bar' : 'area',
-    data: convertedData,
-    fill: type !== 'bar',
-    yAxisID: type === 'bar' ? 'y' : 'y2',
-  }
+const useInterval = (callback: () => unknown, delay: number | null) => {
+  const savedCallback = useRef(callback)
+
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    if (delay == null) {
+      return
+    }
+
+    const timeId = setInterval(() => savedCallback.current(), delay)
+
+    // eslint-disable-next-line consistent-return
+    return () => clearInterval(timeId)
+  }, [delay])
 }
 
-export default convertRawDataToChartData
+export default useInterval
