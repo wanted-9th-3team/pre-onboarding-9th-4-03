@@ -3,26 +3,23 @@ import {
   Thead,
   Table,
   Tr,
-  Th,
   Tbody,
   Stack,
   Card,
-  CardBody,
   Center,
-  Button,
+  Box,
+  CardBody,
+  Td,
 } from '@chakra-ui/react'
 import styled from '@emotion/styled'
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useCallback, useEffect } from 'react'
 import usePaginate from '../../hooks/pagination/usePaginate'
-import { useAppDispatch } from '../../store'
-import { selectSearchedTableLists } from '../../store/table/tableSelector'
-import {
-  filterByStatusTable,
-  sortTableLists,
-} from '../../store/table/tableSlice'
-import { SORTCATEGORY } from '../../Type'
+import useGetTableQuery from '../../hooks/queries/useGetTableQuery'
+import useTableSorting from '../../hooks/sorting/useTableSorting'
+import UseUrlSearch from '../../hooks/urlSearch/useUrlSearch'
 import Pagination from '../Pagination'
+import TableControl from '../TableControl'
+import TableHeader from '../TableHeader'
 import TableLists from '../TableLists'
 
 const CustomTable = styled(Table)`
@@ -30,7 +27,6 @@ const CustomTable = styled(Table)`
   td {
     text-align: center;
   }
-
   tr {
     th {
       font-size: 16px;
@@ -54,72 +50,85 @@ const CustomCard = styled(Card)`
 `
 
 function TableView() {
-  const [isStatusTrue, setIsStatusTrue] = useState(false)
-  const searchedTableLists = useSelector(selectSearchedTableLists)
-  const dispatch = useAppDispatch()
-  const { currentPage, perPageValue, setCurrentPage, currentPageProducts } =
-    usePaginate(searchedTableLists)
+  const { useGetAllTableDataQuery } = useGetTableQuery()
+  const { data: originTableList } = useGetAllTableDataQuery()
+  const { sortedData, sortAndFilterTableData } = useTableSorting(
+    originTableList ?? []
+  )
+  const {
+    currentPage,
+    perPageValue,
+    currentPageProducts,
+    setCurrentPage,
+    perPageValueHandler,
+  } = usePaginate(sortedData)
+  const { setSearchParams, resetSearchParams, getAllSearchParams } =
+    UseUrlSearch()
 
-  const sortById = () => {
-    dispatch(sortTableLists(SORTCATEGORY.SORT_ID))
-  }
+  const currentPageSettingHandler = useCallback(() => {
+    const lastPageNumber = perPageValueHandler(sortedData)
+    if (typeof lastPageNumber === 'number') {
+      setSearchParams({ page: String(lastPageNumber) })
+      setCurrentPage(() => lastPageNumber)
+    }
+  }, [sortedData, perPageValueHandler, setSearchParams, setCurrentPage])
 
-  const sortByTransactionTime = () => {
-    dispatch(sortTableLists(SORTCATEGORY.SORT_TRANSACTION))
-  }
+  // sorting 과 filtering 으로 테이블이 변할 때마다 현재 page 값 조정
+  useEffect(() => {
+    if (!sortedData.length) return
+    currentPageSettingHandler()
+  }, [sortedData, currentPageSettingHandler])
 
-  const filterStatusHandler = () => {
-    setIsStatusTrue(!isStatusTrue)
-    dispatch(filterByStatusTable(!isStatusTrue))
-  }
+  // 처음 들어와서 url search params 를 보고 테이블 값 조정
+  useEffect(() => {
+    const currentParams = getAllSearchParams()
+    if (!currentParams.status) {
+      resetSearchParams()
+    } else {
+      sortAndFilterTableData(currentParams)
+    }
+  }, [resetSearchParams, getAllSearchParams, sortAndFilterTableData])
 
   return (
-    <Stack>
-      <CustomCard h="80vh" overflowY="auto">
+    <Stack h="85vh">
+      <Box display="flex" alignItems="center">
+        <TableControl />
+      </Box>
+      <CustomCard h="100%" overflowY="auto">
         <CardBody h="100%">
           <TableContainer>
             <CustomTable>
               <Thead>
-                <Tr>
-                  <Th>
-                    <Center>
-                      <Button onClick={sortById}>주문번호</Button>
-                    </Center>
-                  </Th>
-                  <Th>
-                    <Button onClick={sortByTransactionTime}>
-                      거래일 & 거래시간
-                    </Button>
-                  </Th>
-                  <Th>
-                    <Button onClick={filterStatusHandler}>주문처리상태</Button>
-                  </Th>
-                  <Th>고객번호</Th>
-                  <Th>고객이름</Th>
-                  <Th>가격</Th>
-                </Tr>
+                <TableHeader />
               </Thead>
               <Tbody>
-                {currentPageProducts.map(table => {
-                  return (
-                    <TableLists
-                      key={table.id}
-                      id={table.id}
-                      currency={table.currency}
-                      customerId={table.customer_id}
-                      customerName={table.customer_name}
-                      status={table.status}
-                      transactionTime={table.transaction_time}
-                    />
-                  )
-                })}
+                {currentPageProducts.length === 0 ? (
+                  <Tr>
+                    <Td>데이터가 없습니다.</Td>
+                  </Tr>
+                ) : (
+                  currentPageProducts.map(table => {
+                    return (
+                      <TableLists
+                        key={table.id}
+                        id={table.id}
+                        currency={table.currency}
+                        customerId={table.customer_id}
+                        customerName={table.customer_name}
+                        status={table.status}
+                        transactionTime={table.transaction_time}
+                      />
+                    )
+                  })
+                )}
               </Tbody>
             </CustomTable>
           </TableContainer>
         </CardBody>
       </CustomCard>
-      <Center h="10vh">
+      <Center>
         <Pagination
+          totalTableCount={sortedData.length}
           setPage={setCurrentPage}
           page={currentPage}
           perPage={perPageValue}

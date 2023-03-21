@@ -1,15 +1,15 @@
 import { Button, Center, FormControl, FormLabel, Input } from '@chakra-ui/react'
-import { FormEvent, useRef } from 'react'
-import { useAppDispatch } from '../../store'
-import { searchByName, sortTableLists } from '../../store/table/tableSlice'
-import { SORTCATEGORY } from '../../Type'
+import { FormEvent, useEffect, useRef } from 'react'
+import useUrlSearch from '../../hooks/urlSearch/useUrlSearch'
 
 function TableControl() {
   const searchTermRef = useRef<HTMLInputElement | null>(null)
-  const dispatch = useAppDispatch()
+  const { setSearchParams, resetSearchParams, getSearchParams } = useUrlSearch()
 
   const resetClickHandler = () => {
-    dispatch(sortTableLists(SORTCATEGORY.SORT_RESET))
+    resetSearchParams()
+    if (!searchTermRef.current) return
+    searchTermRef.current.value = ''
   }
 
   const nameSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -18,21 +18,29 @@ function TableControl() {
 
     const searchName = searchTermRef.current.value
     if (searchName !== null) {
-      dispatch(searchByName(searchName))
+      const encodedSearchTerm = encodeURIComponent(searchName)
+      setSearchParams({ query: encodedSearchTerm })
     }
-    searchTermRef.current.value = ''
   }
 
+  useEffect(() => {
+    const searchTerm = getSearchParams('query')
+    if (searchTerm) {
+      if (!searchTermRef.current) return
+      searchTermRef.current.value = searchTerm
+    }
+  }, [getSearchParams])
+
   return (
-    <Center w="100%" padding="10px 0 " justifyContent="space-around">
+    <Center w="100%" padding="10px 0 " position="relative">
       <form
         onSubmit={nameSubmitHandler}
         style={{
           display: 'flex',
         }}
       >
-        <FormControl mr="10px" display="flex" alignItems="center">
-          <FormLabel>Search</FormLabel>
+        <FormControl mr="20px" display="flex" alignItems="center">
+          <FormLabel fontSize="20px">Search</FormLabel>
           <Input
             type="text"
             name="name"
@@ -44,7 +52,12 @@ function TableControl() {
           submit
         </Button>
       </form>
-      <Button onClick={resetClickHandler} colorScheme="red">
+      <Button
+        onClick={resetClickHandler}
+        colorScheme="red"
+        position="absolute"
+        right="10px"
+      >
         reset
       </Button>
     </Center>

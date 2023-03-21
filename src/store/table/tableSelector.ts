@@ -11,7 +11,11 @@ export const selectSearchedTableLists = createSelector(
   [selectTableListsReducer],
   table => table.searchedTableLists
 )
+export const selectSortAndFilteredTableLists = createSelector(
+  [selectTableListsReducer],
+  table => table.sortAndFilteredTableLists
+)
 export const selectTotalTableLists = createSelector(
   [selectTableListsReducer],
-  table => table.searchedTableLists.length
+  table => table.sortAndFilteredTableLists.length
 )

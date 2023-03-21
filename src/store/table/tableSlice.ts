@@ -1,17 +1,56 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { ITable, TSortingCategory } from '../../Type'
+import { ITable, TFilterCategory, TSortingCategory } from '../../Type'
 
 interface TableState {
   total: number
   tableLists: ITable[]
+  sortAndFilteredTableLists: ITable[]
   searchedTableLists: ITable[]
 }
 
 export const initialState: TableState = {
   total: 0,
   tableLists: [],
+  sortAndFilteredTableLists: [],
   searchedTableLists: [],
+}
+
+const tableSortingHandler = (
+  dataTable: ITable[],
+  sort: 'id' | 'transaction_time'
+) => {
+  if (sort === 'id') {
+    return dataTable.sort((a, b) => b.id - a.id)
+  }
+  return dataTable.sort(
+    (a, b) =>
+      new Date(b.transaction_time).valueOf() -
+      new Date(a.transaction_time).valueOf()
+  )
+}
+
+const tableFilertingHandler = (
+  dataTable: ITable[],
+  filter: TFilterCategory
+) => {
+  const { status, searchTerm } = filter
+  searchTerm.toLowerCase()
+  if (typeof status === 'boolean' && typeof searchTerm === 'string') {
+    const statusFilteredData = dataTable.filter(data => data.status === status)
+    return searchTerm
+      ? statusFilteredData.filter(data =>
+          data.customer_name.toLowerCase().includes(searchTerm)
+        )
+      : statusFilteredData
+  }
+  if (typeof status === 'boolean') {
+    return dataTable.filter(data => data.status === status)
+  }
+
+  return dataTable.filter(data =>
+    data.customer_name.toLowerCase().includes(searchTerm)
+  )
 }
 
 export const TableSlice = createSlice({
@@ -22,29 +61,33 @@ export const TableSlice = createSlice({
       state.total = action.payload.length
       state.tableLists = action.payload
       state.searchedTableLists = action.payload
+      state.sortAndFilteredTableLists = action.payload
     },
-    sortTableLists: (state, action: PayloadAction<TSortingCategory>) => {
-      const category = action.payload
+    sortAndFilterTableLists: (
+      state,
+      action: PayloadAction<{
+        sort?: TSortingCategory
+        filter: TFilterCategory
+      }>
+    ) => {
+      const { sort, filter } = action.payload
 
-      if (category === 'reset') {
-        state.searchedTableLists = state.tableLists
-        return
+      const originTable = [...state.tableLists]
+      const sortedAndFilteredList = tableFilertingHandler(originTable, filter)
+
+      if (sort) {
+        // if (sort === 'reset') {
+        //   state.searchedTableLists = state.tableLists
+        //   state.sortAndFilteredTableLists = state.tableLists
+        //   return
+        // }
+        const rawData = sortedAndFilteredList
+        const newSortedTableLists = tableSortingHandler(rawData, sort)
+
+        state.sortAndFilteredTableLists = newSortedTableLists
       }
 
-      let newSortedTableLists: ITable[] = []
-      const originTable = [...state.searchedTableLists]
-
-      if (category === 'id') {
-        newSortedTableLists = originTable.sort((a, b) => b.id - a.id)
-      } else {
-        newSortedTableLists = originTable.sort(
-          (a, b) =>
-            new Date(b.transaction_time).valueOf() -
-            new Date(a.transaction_time).valueOf()
-        )
-      }
-
-      state.searchedTableLists = newSortedTableLists
+      state.sortAndFilteredTableLists = sortedAndFilteredList
     },
     filterByStatusTable: (state, action: PayloadAction<boolean>) => {
       const status = action.payload
@@ -68,7 +111,7 @@ export const TableSlice = createSlice({
       if (searchTerm.length === 0) {
         state.searchedTableLists = state.tableLists
       }
-      state.searchedTableLists = state.tableLists.filter(list =>
+      state.searchedTableLists = state.searchedTableLists.filter(list =>
         list.customer_name.toLocaleLowerCase().includes(searchTerm)
       )
     },
@@ -77,7 +120,7 @@ export const TableSlice = createSlice({
 
 export const {
   setTableLists,
-  sortTableLists,
+  sortAndFilterTableLists,
   filterByStatusTable,
   searchByName,
 } = TableSlice.actions

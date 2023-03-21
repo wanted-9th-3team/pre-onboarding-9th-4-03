@@ -6,6 +6,15 @@ const usePaginate = (products: ITable[]) => {
   const [currentPage, setCurrentPage] = useState(1)
   const perPageValue = 50
 
+  // 현재 버튼 값보다 변한 데이터의 마지막 버튼 값이 작을 경우 버튼 값 변경울 위한 함수
+  const perPageValueHandler = (newTableData: ITable[]) => {
+    const lastPageNumber = Math.ceil(newTableData.length / perPageValue)
+    if (lastPageNumber < currentPage) {
+      return lastPageNumber
+    }
+    return null
+  }
+
   const currentPageProducts = useMemo(
     () =>
       products?.slice(
@@ -18,8 +27,9 @@ const usePaginate = (products: ITable[]) => {
   return {
     currentPage,
     perPageValue,
-    setCurrentPage,
     currentPageProducts,
+    setCurrentPage,
+    perPageValueHandler,
   }
 }
 
