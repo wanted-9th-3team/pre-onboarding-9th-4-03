@@ -3,7 +3,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 
 function StatusButton(props: {
   status: string
-  setStatus: React.Dispatch<React.SetStateAction<string>>
+  setStatus: (nowStatus: string) => void
 }) {
   const { status, setStatus } = props
 
@@ -12,30 +12,30 @@ function StatusButton(props: {
   }
   return (
     <Menu>
-      <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+      <MenuButton size='xs' as={Button} minW='95px' rightIcon={<ChevronDownIcon />}>
         {status}
       </MenuButton>
       <MenuList>
         <MenuItem
           onClick={() => {
-            onClickHandler('전체')
+            onClickHandler('all')
           }}
         >
-          전체
+          all
         </MenuItem>
         <MenuItem
           onClick={() => {
-            onClickHandler('진행중')
+            onClickHandler('processing')
           }}
         >
-          진행중
+          processing
         </MenuItem>
         <MenuItem
           onClick={() => {
-            onClickHandler('완료')
+            onClickHandler('completed')
           }}
         >
-          완료
+          completed
         </MenuItem>
       </MenuList>
     </Menu>

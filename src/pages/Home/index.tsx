@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query'
 import getTradeInfo from '../../apis/TableApi'
 import { filterTradeByDate } from '../../utils/filter'
+import { Container, Heading } from '@chakra-ui/react'
 import TradeTable from '../../components/TradeTable'
 
 const TODAY = '2023-03-08'
@@ -12,9 +13,12 @@ function Home() {
   })
 
   return (
-    <div>
+    <Container minW='1000px'>
+      <header>
+        <Heading as='h1' size='lg' style={{padding:'20px', textAlign:'center'}}>Order Management</Heading>
+      </header>
       <TradeTable trade={filterTradeByDate(data, TODAY)} />
-    </div>
+    </Container>
   )
 }
 

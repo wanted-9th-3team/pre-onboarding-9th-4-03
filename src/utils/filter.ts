@@ -26,9 +26,9 @@ export const filterTradeByStatus = (
 ) => {
   if (initTrade) {
     switch (status) {
-      case '완료':
+      case 'completed':
         return initTrade.filter(trade => trade.status === true)
-      case '진행중':
+      case 'processing':
         return initTrade.filter(trade => trade.status === false)
       default:
         return initTrade

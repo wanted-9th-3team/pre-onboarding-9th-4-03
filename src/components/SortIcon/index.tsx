@@ -7,7 +7,7 @@ function SortIcon(props: { typeID: string; sortBy: string[]; onClick: any }) {
   const buttonClickHandler = () => {
     onClick()
   }
-  if (typeID === sortBy[0] && sortBy[1] === '내림차')
+  if (typeID === sortBy[0] && sortBy[1] === 'DESC')
     return (
       <IconButton
         variant="unstyled"

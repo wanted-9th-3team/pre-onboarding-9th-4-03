@@ -7,7 +7,7 @@ function TradeTableItem(props: { nowTrade: TradeItem }) {
     <Tr>
       <Td>{nowTrade.id}</Td>
       <Td>{nowTrade.transaction_time}</Td>
-      <Td>{nowTrade.status ? '완료' : '진행중'}</Td>
+      <Td>{nowTrade.status ? 'completed' : 'processing'}</Td>
       <Td>{nowTrade.customer_id}</Td>
       <Td>{nowTrade.customer_name}</Td>
       <Td isNumeric>{nowTrade.currency}</Td>
