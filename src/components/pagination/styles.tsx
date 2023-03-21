@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 
   .pagination-item:hover {
     cursor: pointer;
-    background-color: #E2E8F0;
+    background-color: #e2e8f0;
   }
 
   .pagination-item-active {

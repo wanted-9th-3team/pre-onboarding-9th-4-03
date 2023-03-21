@@ -7,7 +7,7 @@ import {
   Th,
   TableCaption,
   Grid,
-  GridItem
+  GridItem,
 } from '@chakra-ui/react'
 import { usePagination } from 'pagination-react-js'
 import { TradeItem } from '../../Type'
@@ -36,9 +36,15 @@ function TradeTable(props: { trade: TradeItem[] }) {
   const { trade } = props
   const { currentPage, entriesPerPage, entries } = usePagination(1, 50)
   const [searchParams, setSearchParams] = useSearchParams()
-  const sortBy = searchParams.get('sort_by')?searchParams.get('sort_by') as string:'id_ASC'
-  const status = searchParams.get('status')?searchParams.get('status') as string:'all'
-  const name = searchParams.get('name')?searchParams.get('name') as string:''
+  const sortBy = searchParams.get('sort_by')
+    ? (searchParams.get('sort_by') as string)
+    : 'id_ASC'
+  const status = searchParams.get('status')
+    ? (searchParams.get('status') as string)
+    : 'all'
+  const name = searchParams.get('name')
+    ? (searchParams.get('name') as string)
+    : ''
 
   const sortTrade = (nowTrade: TradeItem[] | undefined | null) => {
     switch (sortBy) {
@@ -54,7 +60,7 @@ function TradeTable(props: { trade: TradeItem[] }) {
   }
 
   const searchByName = (inputName: string) => {
-    setSearchParams({...getAllSearchParams(),name:inputName})
+    setSearchParams({ ...getAllSearchParams(), name: inputName })
   }
 
   const filterAll = () => {
@@ -71,10 +77,10 @@ function TradeTable(props: { trade: TradeItem[] }) {
     return sortTrade(result) as TradeItem[]
   }
 
-  const getAllSearchParams = () =>{
+  const getAllSearchParams = () => {
     let params = {}
-    for(let [key, value] of searchParams.entries()){
-      params = {...params, [key]:value}
+    for (let [key, value] of searchParams.entries()) {
+      params = { ...params, [key]: value }
     }
     return params
   }
@@ -82,33 +88,35 @@ function TradeTable(props: { trade: TradeItem[] }) {
   const iconClickHandler = (typeID: string) => {
     const nowSortBy = sortBy.split('_')
     if (typeID === nowSortBy[0]) {
-      if (nowSortBy[1] === 'ASC') setSearchParams({...getAllSearchParams(),sort_by:`${typeID}_DESC`})
-      else setSearchParams({...getAllSearchParams(),sort_by:`${typeID}_ASC`})
+      if (nowSortBy[1] === 'ASC')
+        setSearchParams({ ...getAllSearchParams(), sort_by: `${typeID}_DESC` })
+      else
+        setSearchParams({ ...getAllSearchParams(), sort_by: `${typeID}_ASC` })
     } else {
-      setSearchParams({...getAllSearchParams(),sort_by:`${typeID}_DESC`})
+      setSearchParams({ ...getAllSearchParams(), sort_by: `${typeID}_DESC` })
     }
   }
 
   const statusChangeHandler = (nowStatus: string) => {
-    setSearchParams({...getAllSearchParams(), status:nowStatus})
+    setSearchParams({ ...getAllSearchParams(), status: nowStatus })
   }
-
 
   return (
     <div>
-      <Grid templateColumns='repeat(2, 1fr)'>
+      <Grid templateColumns="repeat(2, 1fr)">
         <GridItem colSpan={1}>
-      <PaginationBar
-        currentPage={currentPage}
-        entriesPerPage={entriesPerPage}
-        trade={name ? filterTradeByCustomerName(trade, name) : trade}
-      /></GridItem>
+          <PaginationBar
+            currentPage={currentPage}
+            entriesPerPage={entriesPerPage}
+            trade={name ? filterTradeByCustomerName(trade, name) : trade}
+          />
+        </GridItem>
         <GridItem colSpan={1}>
-      <SearchInput onClickHandler={searchByName} />
-      </GridItem>
+          <SearchInput onClickHandler={searchByName} />
+        </GridItem>
       </Grid>
       <WrapperTableContainer>
-        <Table variant='striped' colorScheme='gray'>
+        <Table variant="striped" colorScheme="gray">
           <TableCaption>Order List</TableCaption>
           <Thead>
             <Tr>

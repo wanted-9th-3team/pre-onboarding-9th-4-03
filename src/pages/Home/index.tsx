@@ -13,9 +13,15 @@ function Home() {
   })
 
   return (
-    <Container minW='1000px'>
+    <Container minW="1000px">
       <header>
-        <Heading as='h1' size='lg' style={{padding:'20px', textAlign:'center'}}>Order Management</Heading>
+        <Heading
+          as="h1"
+          size="lg"
+          style={{ padding: '20px', textAlign: 'center' }}
+        >
+          Order Management
+        </Heading>
       </header>
       <TradeTable trade={filterTradeByDate(data, TODAY)} />
     </Container>

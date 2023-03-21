@@ -12,7 +12,12 @@ function StatusButton(props: {
   }
   return (
     <Menu>
-      <MenuButton size='xs' as={Button} minW='95px' rightIcon={<ChevronDownIcon />}>
+      <MenuButton
+        size="xs"
+        as={Button}
+        minW="95px"
+        rightIcon={<ChevronDownIcon />}
+      >
         {status}
       </MenuButton>
       <MenuList>
