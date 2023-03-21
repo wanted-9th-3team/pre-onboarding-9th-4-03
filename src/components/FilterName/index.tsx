@@ -1,31 +1,40 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import { ContentData, orderData, filterNameData } from '../../atom/index'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useRecoilState } from 'recoil'
+import { Input, Button } from '@chakra-ui/react'
+import { NameData } from '../../atom/index'
 
-function NameFilter({ tableData }: any) {
-  const [tableDatas, setTableData] =
-    useRecoilState(filterNameData) /* 전체데이터 */
-  const [name, setName] = useState('')
-  console.log(tableDatas)
-  const nameHandler = (e: any) => {
+function NameFilter() {
+  const [name, setName] = useRecoilState(NameData)
+  const [searchParams] = useSearchParams()
+
+  const sortname = searchParams.get('sort')
+  const trueName = searchParams.get('boolean')
+
+  const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    searchParams.set('name', name)
     setName(e.target.value)
   }
 
-  const nameFiltereHandler = () => {
-    const A = tableData.filter((item: any) => item.customer_name === name)
-    setTableData(A)
-    console.log(A)
-  }
-
-  console.log(tableDatas)
   return (
     <div>
-      <input value={name} onChange={nameHandler} />
-      <Link to="/name">
-        <button type="button" onClick={nameFiltereHandler}>
-          필터링
-        </button>
+      <Input
+        size="sm"
+        width="200px"
+        variant="outline"
+        value={name}
+        onChange={nameHandler}
+      />
+
+      <Link to={`/filter?sort=${sortname}&status=${trueName}&name=${name}`}>
+        <Button colorScheme="teal" type="button" size="sm">
+          filter
+        </Button>
+      </Link>
+
+      <Link to="/filter?sort=null&status=ALL">
+        <Button colorScheme="orange" type="button" size="sm">
+          reset
+        </Button>
       </Link>
     </div>
   )
