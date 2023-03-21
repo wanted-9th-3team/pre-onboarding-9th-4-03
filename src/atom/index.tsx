@@ -1,23 +1,17 @@
 import { atom } from 'recoil'
-import { recoilPersist } from 'recoil-persist'
 import { Ttable } from '../Type'
-
-// const { persistAtom } = recoilPersist()
 
 export const ContentData = atom<Ttable[]>({
   key: 'ContentData',
   default: [],
-  // effects_UNSTABLE: [persistAtom],
 })
 
-export const orderData = atom<Ttable[]>({
-  key: 'orderData',
+export const productData = atom<Ttable[]>({
+  key: 'productData',
   default: [],
-  // effects_UNSTABLE: [persistAtom],
 })
 
-export const filterNameData = atom<Ttable[]>({
-  key: 'filterNameData',
-  default: [],
-  // effects_UNSTABLE: [persistAtom],
+export const NameData = atom<string>({
+  key: 'NameData',
+  default: '',
 })
