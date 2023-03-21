@@ -11,7 +11,7 @@ import useInterval from './utils/util'
 
 function App() {
   const setTableData = useSetRecoilState(ContentData)
-  const delay = 500000
+  const delay = 5000
 
   const dataHandler = async () => {
     const response: Ttable[] = await getTableInfo()
