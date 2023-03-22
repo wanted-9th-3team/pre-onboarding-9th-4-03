@@ -5,7 +5,7 @@ export interface Ttable {
 
 export interface IData {
   id: number
-  transaction_time: string
+  transaction_time: number
   status: boolean
   customer_id: number
   customer_name: string

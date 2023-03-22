@@ -1,26 +1,37 @@
 import { useQuery } from '@tanstack/react-query'
+import { useSetRecoilState } from 'recoil'
 import styled from 'styled-components'
 import getTableInfo from '../../apis/tableApi.ts'
-import Pagination from '../../components/Pagination'
-import SearchUserName from '../../components/SearchUserName'
+import { allFetchedDataAtom } from '../../atoms'
+import Pagination from '../../components/Pagen/index'
+import Filter from '../../components/Filter'
 import SortButtons from '../../components/SortButtons'
 import Table from '../../components/Table'
-import { IData, ITableInfo } from '../../Type'
+import { IData } from '../../Type'
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
 `
+const TableSettings = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 function Home() {
-  const { isLoading, data } = useQuery<IData[]>(['tableInfo'], getTableInfo, {
+  const { data } = useQuery<IData[]>(['tableInfo'], getTableInfo, {
     refetchInterval: 5000,
   })
+  const SetRecoilState = useSetRecoilState(allFetchedDataAtom)
+
+  if (data) SetRecoilState(data)
   return (
     <>
-      <h1>3월 8일도 열정 열정 열정</h1>
+      <h1>표: 3월 8일</h1>
       <Container>
-        <SearchUserName></SearchUserName>
-        <SortButtons></SortButtons>
+        <TableSettings>
+          <Filter></Filter>
+          <SortButtons></SortButtons>
+        </TableSettings>
         <Table></Table>
         <Pagination></Pagination>
       </Container>
