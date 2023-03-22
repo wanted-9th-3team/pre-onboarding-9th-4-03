@@ -1,8 +1,11 @@
 import { Tr, Td } from '@chakra-ui/react'
 import { TradeItem } from '../../Type'
 
-function TradeTableItem(props: { nowTrade: TradeItem }) {
-  const { nowTrade } = props
+interface ITradeTableItemProps {
+  nowTrade: TradeItem
+}
+
+function TradeTableItem({ nowTrade }: ITradeTableItemProps) {
   return (
     <Tr>
       <Td>{nowTrade.id}</Td>

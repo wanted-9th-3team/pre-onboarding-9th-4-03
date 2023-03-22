@@ -1,20 +1,37 @@
 import { IconButton } from '@chakra-ui/react'
 import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import useUrlSearch from '@hooks/useUrlSearch'
 
-function SortIcon(props: { typeID: string; sortBy: string[]; onClick: any }) {
-  const { typeID, sortBy, onClick } = props
-  const color = typeID === sortBy[0] ? 'teal' : 'gray'
-  const buttonClickHandler = () => {
-    onClick()
+interface ISortIconProps {
+  typeID: string
+  sortBy: string
+}
+
+function SortIcon({ typeID, sortBy }: ISortIconProps) {
+  const { setSearchParams } = useUrlSearch()
+  const [sortType, sortOrder] = sortBy.split('_')
+  const color = typeID === sortType ? 'teal' : 'gray'
+
+  const iconClickHandler = (typeId: string) => {
+    if (typeId !== sortType) {
+      setSearchParams({ sort_by: `${typeId}_DESC` })
+      return
+    }
+    if (sortOrder === 'ASC') {
+      setSearchParams({ sort_by: `${typeId}_DESC` })
+      return
+    }
+    setSearchParams({ sort_by: `${typeId}_ASC` })
   }
-  if (typeID === sortBy[0] && sortBy[1] === 'DESC')
+
+  if (typeID === sortType && sortOrder === 'DESC')
     return (
       <IconButton
         variant="unstyled"
         aria-label="down"
-        color={color}
         icon={<ChevronDownIcon />}
-        onClick={buttonClickHandler}
+        color={color}
+        onClick={() => iconClickHandler(typeID)}
       />
     )
   return (
@@ -23,7 +40,7 @@ function SortIcon(props: { typeID: string; sortBy: string[]; onClick: any }) {
       aria-label="up"
       color={color}
       icon={<ChevronUpIcon />}
-      onClick={buttonClickHandler}
+      onClick={() => iconClickHandler(typeID)}
     />
   )
 }

@@ -3,18 +3,23 @@ import { Pagination } from 'pagination-react-js'
 import { TradeItem } from '../../Type'
 import Wrapper from './styles'
 
-function PaginationBar(props: {
+interface IPagenationBarProps {
   entriesPerPage: {
-    get: number // Returns the maximum number of entries per page
-    set: (arg: number) => void // Updates the maximum number of entries per page
+    get: number
+    set: (arg: number) => void
   }
   currentPage: {
-    get: number // Returns the active page number
-    set: React.Dispatch<React.SetStateAction<number>> // Updates the active page number
+    get: number
+    set: React.Dispatch<React.SetStateAction<number>>
   }
   trade: TradeItem[]
-}) {
-  const { entriesPerPage, currentPage, trade } = props
+}
+
+function PaginationBar({
+  entriesPerPage,
+  trade,
+  currentPage,
+}: IPagenationBarProps) {
   return (
     <Wrapper>
       <Pagination
@@ -33,19 +38,17 @@ function PaginationBar(props: {
           navPrevCustom: 'pagination-item',
           navNextCustom: 'pagination-item',
         }}
-        navStart="&#171;" // Here you can pass anything (Text, HTML Tag, React Component, ...)
-        navEnd="&#187;" // Here you can pass anything (Text, HTML Tag, React Component, ...)
-        navPrev="&#x2039;" // Here you can pass anything (Text, HTML Tag, React Component, ...)
-        navNext="&#x203a;" // Here you can pass anything (Text, HTML Tag, React Component, ...)
+        navStart="&#171;"
+        navEnd="&#187;"
+        navPrev="&#x2039;"
+        navNext="&#x203a;"
         navPrevCustom={{
           steps: 5,
-          content:
-            '\u00B7\u00B7\u00B7' /* Here you can pass anything (Text, HTML Tag, React Component, ...) */,
+          content: '\u00B7\u00B7\u00B7',
         }}
         navNextCustom={{
           steps: 5,
-          content:
-            '\u00B7\u00B7\u00B7' /* Here you can pass anything (Text, HTML Tag, React Component, ...) */,
+          content: '\u00B7\u00B7\u00B7',
         }}
       />
     </Wrapper>

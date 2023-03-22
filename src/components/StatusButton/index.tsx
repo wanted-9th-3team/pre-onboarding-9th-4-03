@@ -1,15 +1,19 @@
+import { MouseEvent } from 'react'
 import { Menu, MenuButton, MenuList, MenuItem, Button } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
+import useUrlSearch from '@hooks/useUrlSearch'
 
-function StatusButton(props: {
+interface IStatusButtonProps {
   status: string
-  setStatus: (nowStatus: string) => void
-}) {
-  const { status, setStatus } = props
+}
 
-  const onClickHandler = (clickedStatus: string) => {
-    setStatus(clickedStatus)
+function StatusButton({ status }: IStatusButtonProps) {
+  const { setSearchParams } = useUrlSearch()
+
+  const onClickHandler = (e: MouseEvent<HTMLButtonElement>) => {
+    setSearchParams({ status: e.currentTarget.value })
   }
+
   return (
     <Menu>
       <MenuButton
@@ -18,28 +22,16 @@ function StatusButton(props: {
         minW="95px"
         rightIcon={<ChevronDownIcon />}
       >
-        {status}
+        {status.length ? status : 'all'}
       </MenuButton>
       <MenuList>
-        <MenuItem
-          onClick={() => {
-            onClickHandler('all')
-          }}
-        >
+        <MenuItem value="all" onClick={onClickHandler}>
           all
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            onClickHandler('processing')
-          }}
-        >
+        <MenuItem value="processing" onClick={onClickHandler}>
           processing
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            onClickHandler('completed')
-          }}
-        >
+        <MenuItem value="completed" onClick={onClickHandler}>
           completed
         </MenuItem>
       </MenuList>
