@@ -1,6 +1,5 @@
 import React from 'react'
 import { Pagination } from 'pagination-react-js'
-import { TradeItem } from '../../Type'
 import Wrapper from './styles'
 
 interface IPagenationBarProps {
