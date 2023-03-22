@@ -12,19 +12,19 @@ interface IPagenationBarProps {
     get: number
     set: React.Dispatch<React.SetStateAction<number>>
   }
-  trade: TradeItem[]
+  tradeLength: number
 }
 
 function PaginationBar({
   entriesPerPage,
-  trade,
+  tradeLength,
   currentPage,
 }: IPagenationBarProps) {
   return (
     <Wrapper>
       <Pagination
         entriesPerPage={entriesPerPage.get}
-        totalEntries={trade.length}
+        totalEntries={tradeLength}
         currentPage={{ get: currentPage.get, set: currentPage.set }}
         offset={2}
         classNames={{

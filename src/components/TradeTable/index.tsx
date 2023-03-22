@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from 'react'
 import {
   Table,
   Thead,
@@ -9,7 +10,6 @@ import {
   Grid,
   GridItem,
 } from '@chakra-ui/react'
-import { useEffect } from 'react'
 import { usePagination } from 'pagination-react-js'
 import { filterTradeByCustomerName, filterTradeByStatus } from '@utils/filter'
 import {
@@ -55,24 +55,28 @@ function TradeTable({ trade }: ITradeTableProps) {
   const status = getSearchParams('status')
   const name = getSearchParams('name')
   const page = getSearchParams('page')
+  const [tradeLength, setTradeLength] = useState(trade.length)
   const { currentPage, entriesPerPage, entries } = usePagination(
     Number(page.length === 0 ? 1 : page),
     50
   )
   const { set: currentPageSet, get: currentPageGet } = currentPage
 
-  const sortTrade = (nowTrade: TradeItem[]) => {
-    switch (sortBy) {
-      case 'time_ASC':
-        return sortByTransactonTimeASC(nowTrade)
-      case 'time_DESC':
-        return sortByTransactonTimeDESC(nowTrade)
-      case 'id_DESC':
-        return sortByIDDESC(nowTrade)
-      default:
-        return sortByIDASC(nowTrade)
-    }
-  }
+  const sortTrade = useCallback(
+    (nowTrade: TradeItem[]) => {
+      switch (sortBy) {
+        case 'time_ASC':
+          return sortByTransactonTimeASC(nowTrade)
+        case 'time_DESC':
+          return sortByTransactonTimeDESC(nowTrade)
+        case 'id_DESC':
+          return sortByIDDESC(nowTrade)
+        default:
+          return sortByIDASC(nowTrade)
+      }
+    },
+    [sortBy]
+  )
 
   const searchByName = (inputName: string) => {
     const encodedSearchTerm = encodeURIComponent(inputName)
@@ -80,24 +84,24 @@ function TradeTable({ trade }: ITradeTableProps) {
     currentPageSet(1)
   }
 
-  const filterAll = () => {
-    const { indexOfFirst, indexOfLast } = entries
+  const filterAll = useCallback(() => {
     let result = [...trade]
     if (name) {
-      result = filterTradeByCustomerName(result, name).slice(
-        indexOfFirst,
-        indexOfLast
-      )
-    } else {
-      result = result.slice(indexOfFirst, indexOfLast)
+      result = filterTradeByCustomerName(result, name)
     }
     result = filterTradeByStatus(result, status ?? 'all')
-    return sortTrade(result)
-  }
+    result = sortTrade(result)
+
+    return result
+  }, [trade, name, status, sortTrade])
 
   useEffect(() => {
     setSearchParams({ page: currentPageGet.toString() })
   }, [currentPageGet, setSearchParams])
+
+  useEffect(() => {
+    setTradeLength(filterAll().length)
+  }, [filterAll])
 
   return (
     <div>
@@ -106,7 +110,7 @@ function TradeTable({ trade }: ITradeTableProps) {
           <PaginationBar
             currentPage={currentPage}
             entriesPerPage={entriesPerPage}
-            trade={name ? filterTradeByCustomerName(trade, name) : trade}
+            tradeLength={tradeLength}
           />
         </GridItem>
         <GridItem colSpan={1}>
@@ -136,7 +140,12 @@ function TradeTable({ trade }: ITradeTableProps) {
             </Tr>
           </Thead>
           <Tbody>
-            <TradeTableItems nowTrade={filterAll()} />
+            <TradeTableItems
+              nowTrade={filterAll().slice(
+                entries.indexOfFirst,
+                entries.indexOfLast
+              )}
+            />
           </Tbody>
         </Table>
       </WrapperTableContainer>
