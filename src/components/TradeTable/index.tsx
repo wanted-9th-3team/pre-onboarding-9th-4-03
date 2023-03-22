@@ -1,52 +1,67 @@
-import { useSearchParams } from 'react-router-dom'
 import {
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
+  Td,
   TableCaption,
   Grid,
   GridItem,
 } from '@chakra-ui/react'
+import { useEffect } from 'react'
 import { usePagination } from 'pagination-react-js'
-import { TradeItem } from '../../Type'
-import TradeTableItem from '../TradeTableItem'
-import PaginationBar from '../Pagination'
-import SearchInput from '../SearchInput'
-import SortIcon from '../SortIcon'
-import StatusButton from '../StatusButton'
-import WrapperTableContainer from './styles'
+import { filterTradeByCustomerName, filterTradeByStatus } from '@utils/filter'
 import {
   sortByIDDESC,
   sortByIDASC,
   sortByTransactonTimeDESC,
   sortByTransactonTimeASC,
-} from '../../utils/sort'
-import {
-  filterTradeByCustomerName,
-  filterTradeByStatus,
-} from '../../utils/filter'
+} from '@utils/sort'
+import useUrlSearch from '@hooks/useUrlSearch'
+import TradeTableItem from '@components/TradeTableItem'
+import PaginationBar from '@components/Pagination'
+import SearchInput from '@components/SearchInput'
+import SortIcon from '@components/SortIcon'
+import StatusButton from '@components/StatusButton'
+import { TradeItem } from '../../Type'
+import WrapperTableContainer from './styles'
 
-function TradeTableItems(trade: TradeItem[]) {
-  return trade.map(item => <TradeTableItem key={item.id} nowTrade={item} />)
+interface ITradeTableProps {
+  trade: TradeItem[]
 }
 
-function TradeTable(props: { trade: TradeItem[] }) {
-  const { trade } = props
-  const { currentPage, entriesPerPage, entries } = usePagination(1, 50)
-  const [searchParams, setSearchParams] = useSearchParams()
-  const sortBy = searchParams.get('sort_by')
-    ? (searchParams.get('sort_by') as string)
-    : 'id_ASC'
-  const status = searchParams.get('status')
-    ? (searchParams.get('status') as string)
-    : 'all'
-  const name = searchParams.get('name')
-    ? (searchParams.get('name') as string)
-    : ''
+function TradeTableItems({ nowTrade }: { nowTrade: TradeItem[] }) {
+  if (nowTrade.length > 0)
+    return (
+      <>
+        {nowTrade.map(item => (
+          <TradeTableItem key={item.id} nowTrade={item} />
+        ))}
+      </>
+    )
+  return (
+    <Tr>
+      <Td colSpan={6} style={{ textAlign: 'center' }}>
+        No data.
+      </Td>
+    </Tr>
+  )
+}
 
-  const sortTrade = (nowTrade: TradeItem[] | undefined | null) => {
+function TradeTable({ trade }: ITradeTableProps) {
+  const { setSearchParams, getSearchParams } = useUrlSearch()
+  const sortBy = getSearchParams('sort_by')
+  const status = getSearchParams('status')
+  const name = getSearchParams('name')
+  const page = getSearchParams('page')
+  const { currentPage, entriesPerPage, entries } = usePagination(
+    Number(page.length === 0 ? 1 : page),
+    50
+  )
+  const { set: currentPageSet, get: currentPageGet } = currentPage
+
+  const sortTrade = (nowTrade: TradeItem[]) => {
     switch (sortBy) {
       case 'time_ASC':
         return sortByTransactonTimeASC(nowTrade)
@@ -59,51 +74,30 @@ function TradeTable(props: { trade: TradeItem[] }) {
     }
   }
 
-  const getAllSearchParams = () => {
-    let params = {}
-    let isDone = false
-    const nowParams = searchParams.entries()
-    while (!isDone) {
-      const param = nowParams.next()
-      if (param.value) params = { ...params, [param.value[0]]: param.value[1] }
-      isDone = !!param.done
-    }
-    return params
-  }
-
   const searchByName = (inputName: string) => {
-    setSearchParams({ ...getAllSearchParams(), name: inputName })
+    const encodedSearchTerm = encodeURIComponent(inputName)
+    setSearchParams({ name: encodedSearchTerm })
+    currentPageSet(1)
   }
 
   const filterAll = () => {
-    let result = []
+    const { indexOfFirst, indexOfLast } = entries
+    let result = [...trade]
     if (name) {
-      result = filterTradeByCustomerName(trade, name).slice(
-        entries.indexOfFirst,
-        entries.indexOfLast
+      result = filterTradeByCustomerName(result, name).slice(
+        indexOfFirst,
+        indexOfLast
       )
     } else {
-      result = trade.slice(entries.indexOfFirst, entries.indexOfLast)
+      result = result.slice(indexOfFirst, indexOfLast)
     }
-    result = filterTradeByStatus(result, status)
-    return sortTrade(result) as TradeItem[]
+    result = filterTradeByStatus(result, status ?? 'all')
+    return sortTrade(result)
   }
 
-  const iconClickHandler = (typeID: string) => {
-    const nowSortBy = sortBy.split('_')
-    if (typeID === nowSortBy[0]) {
-      if (nowSortBy[1] === 'ASC')
-        setSearchParams({ ...getAllSearchParams(), sort_by: `${typeID}_DESC` })
-      else
-        setSearchParams({ ...getAllSearchParams(), sort_by: `${typeID}_ASC` })
-    } else {
-      setSearchParams({ ...getAllSearchParams(), sort_by: `${typeID}_DESC` })
-    }
-  }
-
-  const statusChangeHandler = (nowStatus: string) => {
-    setSearchParams({ ...getAllSearchParams(), status: nowStatus })
-  }
+  useEffect(() => {
+    setSearchParams({ page: currentPageGet.toString() })
+  }, [currentPageGet, setSearchParams])
 
   return (
     <div>
@@ -126,30 +120,24 @@ function TradeTable(props: { trade: TradeItem[] }) {
             <Tr>
               <Th>
                 ID
-                <SortIcon
-                  typeID="id"
-                  sortBy={sortBy.split('_')}
-                  onClick={() => iconClickHandler('id')}
-                />
+                <SortIcon typeID="id" sortBy={sortBy} />
               </Th>
               <Th>
                 Transaction Time
-                <SortIcon
-                  typeID="time"
-                  sortBy={sortBy.split('_')}
-                  onClick={() => iconClickHandler('time')}
-                />
+                <SortIcon typeID="time" sortBy={sortBy} />
               </Th>
               <Th>
                 status
-                <StatusButton status={status} setStatus={statusChangeHandler} />
+                <StatusButton status={status} />
               </Th>
               <Th>Customer ID</Th>
               <Th>Customer Name</Th>
               <Th>Price</Th>
             </Tr>
           </Thead>
-          <Tbody>{TradeTableItems(filterAll())}</Tbody>
+          <Tbody>
+            <TradeTableItems nowTrade={filterAll()} />
+          </Tbody>
         </Table>
       </WrapperTableContainer>
     </div>
