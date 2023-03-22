@@ -10,29 +10,21 @@ export const filterTradeByDate = (
 }
 
 export const filterTradeByCustomerName = (
-  initTrade: TradeItem[] | undefined | null,
+  initTrade: TradeItem[],
   name: string
 ) => {
-  if (initTrade)
-    return initTrade.filter(trade =>
-      trade.customer_name.toUpperCase().includes(name.toUpperCase())
-    )
-  return []
+  return initTrade.filter(trade =>
+    trade.customer_name.toUpperCase().includes(name.toUpperCase())
+  )
 }
 
-export const filterTradeByStatus = (
-  initTrade: TradeItem[] | undefined | null,
-  status: string
-) => {
-  if (initTrade) {
-    switch (status) {
-      case 'completed':
-        return initTrade.filter(trade => trade.status === true)
-      case 'processing':
-        return initTrade.filter(trade => trade.status === false)
-      default:
-        return initTrade
-    }
+export const filterTradeByStatus = (initTrade: TradeItem[], status: string) => {
+  switch (status) {
+    case 'completed':
+      return initTrade.filter(trade => trade.status === true)
+    case 'processing':
+      return initTrade.filter(trade => trade.status === false)
+    default:
+      return initTrade
   }
-  return []
 }
