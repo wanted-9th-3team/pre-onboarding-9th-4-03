@@ -98,7 +98,40 @@ React Query 사용 이유
 
 1. 필터링 로직
 
+```typescript
+// 현재 name url query 에 따라서 필터링 후 status에 따라 또 필터링
+const filterAll = useCallback(() => {
+  let result = [...trade]
+  if (name) {
+    result = filterTradeByCustomerName(result, name)
+  }
+  result = filterTradeByStatus(result, status ?? 'all')
+  result = sortTrade(result)
+
+  return result
+}, [trade, name, status, sortTrade])
+```
+
 2. 정렬 로직
+
+```typescript
+// 현재 sortBy url query 에 들어있는 값을 기준으로 정렬
+const sortTrade = useCallback(
+  (nowTrade: TradeItem[]) => {
+    switch (sortBy) {
+      case 'time_ASC':
+        return sortByTransactonTimeASC(nowTrade)
+      case 'time_DESC':
+        return sortByTransactonTimeDESC(nowTrade)
+      case 'id_DESC':
+        return sortByIDDESC(nowTrade)
+      default:
+        return sortByIDASC(nowTrade)
+    }
+  },
+  [sortBy]
+)
+```
 
 3. serach params 로직
 
