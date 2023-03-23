@@ -33,86 +33,67 @@ const mockTable: TradeItem[] = [
   },
 ]
 
+function reset(tableData: TradeItem[]) {
+  const queryClient = new QueryClient()
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <TradeTable trade={tableData} />
+      </BrowserRouter>
+    </QueryClientProvider>
+  )
+}
+
 describe('TradeTable render ', () => {
   it('render Trade list', async () => {
-    const queryClient = new QueryClient()
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TradeTable trade={mockTable} />
-        </BrowserRouter>
-      </QueryClientProvider>
-    )
+    reset(mockTable)
 
-    expect(screen.getAllByTestId('trade-data-list')).toHaveLength(
-      mockTable.length
-    )
+    const tradeTableList = screen.getAllByTestId('trade-data-list')
+
+    expect(tradeTableList).toHaveLength(mockTable.length)
   })
 
   it('can not render Trade list', async () => {
-    const queryClient = new QueryClient()
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TradeTable trade={[]} />
-        </BrowserRouter>
-      </QueryClientProvider>
-    )
+    reset([])
 
-    expect(screen.getByText(/No data./i)).toBeInTheDocument()
+    const noDataIndicator = screen.getByText(/No data./i)
+
+    expect(noDataIndicator).toBeInTheDocument()
   })
+})
 
+describe('TradeTable sorting funtion', () => {
   it('render id_desc sorted tradetable when click sort button', async () => {
     user.setup()
-    const queryClient = new QueryClient()
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TradeTable trade={mockTable} />
-        </BrowserRouter>
-      </QueryClientProvider>
-    )
-
-    const beforeRenderValue = screen.getAllByTestId('trade-data-list-id')
-
+    reset(mockTable)
+    const beforeRenderIdValue = screen.getAllByTestId('trade-data-list-id')
     const sortButton = screen.getByTestId('sort-button-id')
-    await user.click(sortButton)
 
+    await user.click(sortButton)
     const afterRenderValue = screen.getAllByTestId('trade-data-list-id')
 
-    expect(afterRenderValue).not.toEqual(beforeRenderValue)
+    expect(afterRenderValue).not.toEqual(beforeRenderIdValue)
   })
 
   it('render time_desc sorted tradetable when click sort button', async () => {
     user.setup()
-    const queryClient = new QueryClient()
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TradeTable trade={mockTable} />
-        </BrowserRouter>
-      </QueryClientProvider>
-    )
+    reset(mockTable)
 
-    const beforeRenderValue = screen.getAllByTestId('trade-data-list-time')
-
+    const beforeRenderTimeValue = screen.getAllByTestId('trade-data-list-time')
     const timeButton = screen.getByTestId('sort-button-time')
+
     await user.click(timeButton)
     const afterRenderValue = screen.getAllByTestId('trade-data-list-time')
 
-    expect(afterRenderValue).not.toEqual(beforeRenderValue)
+    expect(afterRenderValue).not.toEqual(beforeRenderTimeValue)
   })
+})
 
+describe('TradeTable filtering funtion', () => {
   it('render status_true filtered tradetable when click filter status button', async () => {
     user.setup()
-    const queryClient = new QueryClient()
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TradeTable trade={mockTable} />
-        </BrowserRouter>
-      </QueryClientProvider>
-    )
+    reset(mockTable)
+
     const filteredMockData = mockTable.filter(table => table.status === true)
     const statusButton = screen.getByTestId('filter-button-status')
 
@@ -125,14 +106,8 @@ describe('TradeTable render ', () => {
 
   it('render name = Howard filtered tradetable when type howard to input tag', async () => {
     user.setup()
-    const queryClient = new QueryClient()
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TradeTable trade={mockTable} />
-        </BrowserRouter>
-      </QueryClientProvider>
-    )
+    reset(mockTable)
+
     const filteredMockData = mockTable.filter(table =>
       table.customer_name.toLowerCase().includes('howard')
     )
@@ -150,14 +125,8 @@ describe('TradeTable render ', () => {
 
   it('render name = Howard filtered tradetable when type howard to input tag and key press Enter ', async () => {
     user.setup()
-    const queryClient = new QueryClient()
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TradeTable trade={mockTable} />
-        </BrowserRouter>
-      </QueryClientProvider>
-    )
+    reset(mockTable)
+
     const filteredMockData = mockTable.filter(table =>
       table.customer_name.toLowerCase().includes('howard')
     )
