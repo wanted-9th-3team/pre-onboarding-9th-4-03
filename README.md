@@ -48,9 +48,11 @@ npm run test
 
 ---
 
-## 배포 사이트
+## 배포 사이트 및 프로젝트 노션
 
 [바로가기](https://wanted-9th-3team.github.io/pre-onboarding-9th-4-03/)
+
+[노션링크](https://maroon-dibble-e23.notion.site/Test-828baf22a3f64912bf9ddacf9e5c2153)
 
 ---
 
@@ -69,9 +71,13 @@ npm run test
 
 ### 1. 필터링 및 정렬
 
-    a. searchparams를 이용하여 새로고침 시에도 필터링이 유지될 수 있도록 구현하였습니다.
-      url search params 예시 : ?page=1&name=baek&status=all&sort_by=id_DESC
-    b. 필터링 요소 : 페이지 번호, 주문 상태, 아이디
+구현 배경
+=> 단순히 과제에 나와있는 그대로 하나씩 기능을 구현하는 것이 아닌 실제 사이트에서 하나씩만 적용이 되지 않고 여러가지 기능이
+겹쳐 적용하기 때문에 이를 토대로 sort정렬과 filter의 기능을 중복해서 이용할 수 있도록 구현했으며 또한 이상태에서 이름을
+검색할 시 그에 맞는 이름이 검색되도록 고려하여 구현했습니다.
+a. searchparams를 이용하여 새로고침 시에도 필터링이 유지될 수 있도록 구현하였습니다.
+url search params 예시 : ?page=1&name=baek&status=all&sort_by=id_DESC
+b. 필터링 요소 : 페이지 번호, 주문 상태, 아이디
 
 ### 2. 페이지네이션
 
@@ -84,15 +90,17 @@ npm run test
 
 React Query 사용 이유
 
-    a. 서버 데이터를 redux나 recoil 과 같은 상태관리 툴에 복사본으로 저장하여 사용하는 것이 아닌 원본 데이터를 사용할 수 있다.
-    b. data refetching을 위해 사용을 고민하던 라이브러리인 useInterval보다 코드가 간결하고 별도로 상태관리 툴에 저장할 필요가 없다.
-    c. 전역 상태관리 툴에 별도로 저장하기위한 코드를 작성하지 않아도 되기때문에 코드량을 확 줄일 수 있다.
-    d. 별도의 devtool을 가지고 있어서 디버깅이 편하다.
-    e. 최신 유행 라이브러리로 커뮤니티가 매우 활성화 되어있다.
+    a. 서버 데이터를 redux나 recoil 과 같은 상태관리 툴에 복사본으로 저장하여 사용하는 것이 아닌 원본 데이터를 사용할 수 있습니다.
+    b. data refetching을 위해 사용을 고민하던 라이브러리인 useInterval보다 코드가 간결하고 별도로 상태관리 툴에 저장할 필요가 없습니다.
+    c. 전역 상태관리 툴에 별도로 저장하기위한 코드를 작성하지 않아도 되기때문에 코드량을 확 줄일 수 있습니다.
+    d. 별도의 devtool을 가지고 있어서 디버깅이 편합니다.
+    e. 최신 유행 라이브러리로 커뮤니티가 매우 활성화 되어있습니다.
 
 ### 4. 테스트 코드
 
     a. 컴포넌트 별로 원하던 동작대로 작동하는지 고려하면서 테스트 코드를 작성하였습니다.
+    b. 커스텀 훅에 관한 테스트 코드를 작성하였습니다.
+    c. msw로 mock server를 만들어 api통신 test를 작성하였습니다.
 
 ### 5. 주요 로직
 
@@ -195,6 +203,12 @@ const getSearchParams = useCallback(
 
 6. [x] 컴포넌트에 대한 **테스트 코드**를 구현해주세요
 
+## 🎥 데모 영상
+
+---
+
+![데모영상](https://raw.githubusercontent.com/BaekYuri/images/main/img/2023_03_22_21_30_03_952.gif)
+
 ## 🗂️ 파일구조
 
 ```
@@ -229,7 +243,21 @@ const getSearchParams = useCallback(
  ┃ ┗ 📂NotFound
  ┃ ┃ ┗ 📜index.tsx
  ┣ 📂tests
- ┃ ┗ 📜App.test.tsx
+ ┃ ┣ 📂mocks
+ ┃ ┃ ┣ 📜handlers.ts
+ ┃ ┃ ┗ 📜server.ts
+ ┃ ┣ 📂providers
+ ┃ ┃ ┣ 📜AppProvider.tsx
+ ┃ ┃ ┗ 📜testUtils.tsx
+ ┃ ┣ 📜Api.test.tsx
+ ┃ ┣ 📜App.test.tsx
+ ┃ ┣ 📜CustomHook.test.tsx
+ ┃ ┣ 📜Pagination.test.tsx
+ ┃ ┣ 📜SearchInput.test.tsx
+ ┃ ┣ 📜SortIcon.test.tsx
+ ┃ ┣ 📜StatusButton.test.tsx
+ ┃ ┣ 📜TradeTable.test.tsx
+ ┃ ┗ 📜TradeTableItem.test.tsx
  ┣ 📂utils
  ┃ ┣ 📜filter.ts
  ┃ ┗ 📜sort.ts
@@ -249,57 +277,51 @@ const getSearchParams = useCallback(
 
 ## Dependencies
 
-This project uses the following dependencies:
+- `@chakra-ui/icons`: 2.0.17
+- `@chakra-ui/react`: 2.5.2
+- `@emotion/react`: 11.10.6
+- `@emotion/styled`: 11.10.6
+- `@rollup/plugin-alias`: 4.0.3
+- `axios`: 1.3.4
+- `framer-motion`: 10.6.0
+- `pagination-react-js`: 1.0.1
+- `react`: 18.2.0
+- `react-dom`: 18.2.0
+- `react-query`: 3.39.3
+- `react-router-dom`: 6.8.2
+- `styled-components`: 5.3.9
 
-```
-"@chakra-ui/icons": "^2.0.17",
-"@chakra-ui/react": "^2.5.2",
-"@emotion/react": "^11.10.6",
-"@emotion/styled": "^11.10.6",
-"@rollup/plugin-alias": "^4.0.3",
-"axios": "^1.3.4",
-"framer-motion": "^10.6.0",
-"pagination-react-js": "^1.0.1",
-"react": "^18.2.0",
-"react-dom": "^18.2.0",
-"react-query": "^3.39.3",
-"react-router-dom": "^6.8.2",
-"styled-components": "^5.3.9"
-```
+## Dev Dependencies
 
-## Development Dependencies
-
-This project uses the following development dependencies:
-
-```
-"@testing-library/jest-dom": "^5.16.5",
-"@testing-library/react": "^14.0.0",
-"@types/react": "^18.0.28",
-"@types/react-dom": "^18.0.11",
-"@types/styled-components": "^5.1.26",
-"@typescript-eslint/eslint-plugin": "^5.54.0",
-"@typescript-eslint/parser": "^5.54.0",
-"@vitejs/plugin-react": "^3.1.0",
-"eslint": "^8.35.0",
-"eslint-config-airbnb": "^19.0.4",
-"eslint-config-airbnb-typescript": "^17.0.0",
-"eslint-config-prettier": "^8.6.0",
-"eslint-plugin-import": "^2.27.5",
-"eslint-plugin-jsx-a11y": "^6.7.1",
-"eslint-plugin-prettier": "^4.2.1",
-"eslint-plugin-react": "^7.32.2",
-"eslint-plugin-react-hooks": "^4.6.0",
-"husky": "^8.0.3",
-"jsdom": "^21.1.0",
-"prettier": "^2.8.4",
-"typescript": "^4.9.5",
-"vite": "^4.1.4",
-"vitest": "^0.29.2"
-```
+- `@testing-library/jest-dom`: 5.16.5
+- `@testing-library/react`: 14.0.0
+- `@testing-library/user-event`: 14.4.3
+- `@types/react`: 18.0.28
+- `@types/react-dom`: 18.0.11
+- `@types/styled-components`: 5.1.26
+- `@typescript-eslint/eslint-plugin`: 5.54.0
+- `@typescript-eslint/parser`: 5.54.0
+- `@vitejs/plugin-react`: 3.1.0
+- `eslint`: 8.35.0
+- `eslint-config-airbnb`: 19.0.4
+- `eslint-config-airbnb-typescript`: 17.0.0
+- `eslint-config-prettier`: 8.6.0
+- `eslint-plugin-import`: 2.27.5
+- `eslint-plugin-jsx-a11y`: 6.7.1
+- `eslint-plugin-prettier`: 4.2.1
+- `eslint-plugin-react`: 7.32.2
+- `eslint-plugin-react-hooks`: 4.6.0
+- `husky`: 8.0.3
+- `jsdom`: 21.1.0
+- `msw`: 1.2.0
+- `prettier`: 2.8.4
+- `typescript`: 4.9.5
+- `vite`: 4.1.4
+- `vitest`: 0.29.2
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT license.
 
 </div>
 </details>

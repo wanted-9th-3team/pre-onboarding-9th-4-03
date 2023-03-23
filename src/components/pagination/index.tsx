@@ -20,7 +20,7 @@ function PaginationBar({
   currentPage,
 }: IPagenationBarProps) {
   return (
-    <Wrapper>
+    <Wrapper data-testid="pagination-bar">
       <Pagination
         entriesPerPage={entriesPerPage.get}
         totalEntries={tradeLength}
