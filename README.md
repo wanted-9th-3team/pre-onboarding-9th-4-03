@@ -50,7 +50,7 @@ npm run test
 
 ## 배포 사이트
 
-[바로가기](https:// /)
+[바로가기](https://wanted-9th-3team.github.io/pre-onboarding-9th-4-03/)
 
 ---
 
@@ -199,6 +199,47 @@ const getSearchParams = useCallback(
 
 ```
 
+📦src
+ ┣ 📂apis
+ ┃ ┗ 📂TableApi
+ ┃ ┃ ┗ 📜index.ts
+ ┣ 📂components
+ ┃ ┣ 📂Pagination
+ ┃ ┃ ┣ 📜index.tsx
+ ┃ ┃ ┗ 📜styles.tsx
+ ┃ ┣ 📂SearchInput
+ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┣ 📂SortIcon
+ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┣ 📂StatusButton
+ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┣ 📂TradeTable
+ ┃ ┃ ┣ 📜index.tsx
+ ┃ ┃ ┗ 📜styles.tsx
+ ┃ ┗ 📂TradeTableItem
+ ┃ ┃ ┗ 📜index.tsx
+ ┣ 📂data
+ ┃ ┗ 📜mock_data.json
+ ┣ 📂hooks
+ ┃ ┗ 📂useUrlSearch
+ ┃ ┃ ┗ 📜index.tsx
+ ┣ 📂pages
+ ┃ ┣ 📂Home
+ ┃ ┃ ┗ 📜index.tsx
+ ┃ ┗ 📂NotFound
+ ┃ ┃ ┗ 📜index.tsx
+ ┣ 📂tests
+ ┃ ┗ 📜App.test.tsx
+ ┣ 📂utils
+ ┃ ┣ 📜filter.ts
+ ┃ ┗ 📜sort.ts
+ ┣ 📜App.css
+ ┣ 📜App.tsx
+ ┣ 📜index.css
+ ┣ 📜main.tsx
+ ┣ 📜setupTests.ts
+ ┣ 📜Type.ts
+ ┗ 📜vite-env.d.ts
 
 ```
 
