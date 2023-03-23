@@ -11,7 +11,7 @@ describe('TradeTable render data get from api', () => {
 
     const tradeTableList = await screen.findAllByTestId('trade-data-list')
 
-    expect(tradeTableList).toHaveLength(3)
+    expect(tradeTableList).toHaveLength(50)
   })
 
   it('no render Trade list by api call fail', async () => {
