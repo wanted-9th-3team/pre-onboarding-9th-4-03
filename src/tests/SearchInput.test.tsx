@@ -15,6 +15,12 @@ describe('SearchInput', () => {
     )
     const textElement = screen.getByPlaceholderText('Customer Name')
     expect(textElement).toBeInTheDocument()
+
+    const deleteButton = screen.getByLabelText(/delete/i)
+    expect(deleteButton).toBeInTheDocument()
+
+    const nameSearchInput = screen.getByPlaceholderText('Customer Name')
+    expect(nameSearchInput).toBeInTheDocument()
   })
 
   it('delte button delete input value correctly', async () => {
@@ -24,7 +30,6 @@ describe('SearchInput', () => {
       </BrowserRouter>
     )
     const deleteButton = screen.getByLabelText(/delete/i)
-    expect(deleteButton).toBeInTheDocument()
     const nameSearchInput = screen.getByPlaceholderText('Customer Name')
 
     fireEvent.change(nameSearchInput, { target: { value: 'howard' } })
