@@ -63,26 +63,28 @@ describe('TradeTable sorting funtion', () => {
   it('render id_desc sorted tradetable when click sort button', async () => {
     user.setup()
     reset(mockTable)
-    const beforeRenderIdValue = screen.getAllByTestId('trade-data-list-id')
     const sortButton = screen.getByTestId('sort-button-id')
 
     await user.click(sortButton)
     const afterRenderValue = screen.getAllByTestId('trade-data-list-id')
 
-    expect(afterRenderValue).not.toEqual(beforeRenderIdValue)
+    expect(afterRenderValue[0]).toHaveTextContent(String(mockTable[2].id))
+    expect(afterRenderValue[1]).toHaveTextContent(String(mockTable[1].id))
+    expect(afterRenderValue[2]).toHaveTextContent(String(mockTable[0].id))
   })
 
   it('render time_desc sorted tradetable when click sort button', async () => {
     user.setup()
     reset(mockTable)
 
-    const beforeRenderTimeValue = screen.getAllByTestId('trade-data-list-time')
     const timeButton = screen.getByTestId('sort-button-time')
 
     await user.click(timeButton)
     const afterRenderValue = screen.getAllByTestId('trade-data-list-time')
 
-    expect(afterRenderValue).not.toEqual(beforeRenderTimeValue)
+    expect(afterRenderValue[0]).toHaveTextContent(mockTable[0].transaction_time)
+    expect(afterRenderValue[1]).toHaveTextContent(mockTable[2].transaction_time)
+    expect(afterRenderValue[2]).toHaveTextContent(mockTable[1].transaction_time)
   })
 })
 
@@ -99,6 +101,7 @@ describe('TradeTable filtering funtion', () => {
     const afterRenderValue = screen.getAllByTestId('trade-data-list-status')
 
     expect(afterRenderValue).toHaveLength(filteredMockData.length)
+    expect(afterRenderValue[0]).toHaveTextContent(/completed/i)
   })
 
   it('render name = Howard filtered tradetable when type howard to input tag', async () => {
