@@ -1,10 +1,10 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import user from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import TradeTable from '@components/TradeTable'
 import { TradeItem } from 'Type'
 import { BrowserRouter } from 'react-router-dom'
+import { render } from './providers/test-utils'
 
 const mockTable: TradeItem[] = [
   {
@@ -34,13 +34,10 @@ const mockTable: TradeItem[] = [
 ]
 
 function reset(tableData: TradeItem[]) {
-  const queryClient = new QueryClient()
   return render(
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TradeTable trade={tableData} />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <TradeTable trade={tableData} />
+    </BrowserRouter>
   )
 }
 
