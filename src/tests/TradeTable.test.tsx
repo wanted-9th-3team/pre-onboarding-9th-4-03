@@ -8,7 +8,7 @@ import { render } from './providers/test-utils'
 
 const mockTable: TradeItem[] = [
   {
-    id: '1',
+    id: 1,
     transaction_time: '2023-03-08 17:39:50',
     status: true,
     customer_id: 15,
@@ -16,7 +16,7 @@ const mockTable: TradeItem[] = [
     currency: '$5.61',
   },
   {
-    id: '2',
+    id: 2,
     transaction_time: '2023-03-08 06:59:37',
     status: true,
     customer_id: 16,
@@ -24,7 +24,7 @@ const mockTable: TradeItem[] = [
     currency: '$10.99',
   },
   {
-    id: '3',
+    id: 3,
     transaction_time: '2023-03-08 06:59:40',
     status: false,
     customer_id: 15,
@@ -92,7 +92,7 @@ describe('TradeTable filtering funtion', () => {
     reset(mockTable)
 
     const filteredMockData = mockTable.filter(table => table.status === true)
-    const statusButton = screen.getByTestId('filter-button-status')
+    const statusButton = screen.getByLabelText('status-button')
 
     await user.click(statusButton)
 

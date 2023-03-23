@@ -32,7 +32,7 @@ function StatusButton({ status }: IStatusButtonProps) {
           processing
         </MenuItem>
         <MenuItem
-          data-testid="filter-button-status"
+          aria-label="status-button"
           value="completed"
           onClick={onClickHandler}
         >

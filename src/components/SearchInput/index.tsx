@@ -29,6 +29,7 @@ function SearchInput({ onClickHandler }: ISearchInputProps) {
     onClickHandler('')
     if (inputRef.current) inputRef.current.value = ''
   }
+
   return (
     <InputGroup size="md">
       <Input
