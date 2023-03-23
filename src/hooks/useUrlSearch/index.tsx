@@ -6,16 +6,16 @@ interface SearchParams {
 }
 
 function useUrlSearch() {
-  const [urlTerm, serUrlTerm] = useSearchParams()
+  const [urlTerm, setUrlTerm] = useSearchParams()
 
   const setSearchParams = useCallback(
     (setParams: SearchParams) => {
       Object.keys(setParams).forEach(key => {
         urlTerm.set(key, setParams[key])
-        serUrlTerm(urlTerm)
+        setUrlTerm(urlTerm)
       })
     },
-    [urlTerm, serUrlTerm]
+    [urlTerm, setUrlTerm]
   )
 
   const getSearchParams = useCallback(
