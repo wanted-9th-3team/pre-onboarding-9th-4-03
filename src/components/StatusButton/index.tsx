@@ -31,7 +31,11 @@ function StatusButton({ status }: IStatusButtonProps) {
         <MenuItem value="processing" onClick={onClickHandler}>
           processing
         </MenuItem>
-        <MenuItem value="completed" onClick={onClickHandler}>
+        <MenuItem
+          data-testid="filter-button-status"
+          value="completed"
+          onClick={onClickHandler}
+        >
           completed
         </MenuItem>
       </MenuList>

@@ -40,5 +40,4 @@ export default defineConfig({
     setupFiles: ['./src/setupTests.ts'],
   },
   publicDir: './src/data',
-  base: '/pre-onboarding-9th-4-03/',
 })
