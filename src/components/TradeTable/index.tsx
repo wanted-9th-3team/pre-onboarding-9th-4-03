@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, MouseEvent } from 'react'
 import {
   Table,
   Thead,
@@ -84,6 +84,11 @@ function TradeTable({ trade }: ITradeTableProps) {
     currentPageSet(1)
   }
 
+  const searchByStatus = (e: MouseEvent<HTMLButtonElement>) => {
+    setSearchParams({ status: e.currentTarget.value })
+    currentPageSet(1)
+  }
+
   const filterAll = useCallback(() => {
     let result = [...trade]
     if (name) {
@@ -132,7 +137,7 @@ function TradeTable({ trade }: ITradeTableProps) {
               </Th>
               <Th>
                 status
-                <StatusButton status={status} />
+                <StatusButton status={status} searchByStatus={searchByStatus} />
               </Th>
               <Th>Customer ID</Th>
               <Th>Customer Name</Th>
