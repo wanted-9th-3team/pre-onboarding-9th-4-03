@@ -52,7 +52,7 @@ npm run test
 
 [바로가기](https://wanted-9th-3team.github.io/pre-onboarding-9th-4-03/)
 
-[노션링크](https://maroon-dibble-e23.notion.site/Test-828baf22a3f64912bf9ddacf9e5c2153)
+[노션링크](https://maroon-dibble-e23.notion.site/pre-onboarding-9th-4-3-341f55bb2ce145b1bd99cef5b8e684b5)
 
 ---
 
