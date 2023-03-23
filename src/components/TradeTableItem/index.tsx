@@ -7,7 +7,7 @@ interface ITradeTableItemProps {
 
 function TradeTableItem({ nowTrade }: ITradeTableItemProps) {
   return (
-    <Tr>
+    <Tr data-testid="trade-table-item">
       <Td>{nowTrade.id}</Td>
       <Td>{nowTrade.transaction_time}</Td>
       <Td>{nowTrade.status ? 'completed' : 'processing'}</Td>
