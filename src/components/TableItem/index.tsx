@@ -11,19 +11,17 @@ function TableItem({ tableData }: ITableList) {
   const [sortName, setSortName] = useState('오름차순')
   const [timeName, setTimeName] = useState('오름차순')
   const [trueName, setTrueName] = useState('ALL')
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const nameArray = ['오름차순', '내림차순']
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
-  const sortname = searchParams.get('sort')
+  // const sortname = searchParams.get('sort')
 
   const orderChangeHandler = (value: string) => {
     if (value === '오름차순') {
-      navigate(`/filter?sort=id`)
       searchParams.set('sort', 'id')
       setSortName('내림차순')
     } else {
-      navigate('/')
       setSortName('오름차순')
       searchParams.set('sort', '')
     }
@@ -31,11 +29,9 @@ function TableItem({ tableData }: ITableList) {
 
   const timeChangeHandler = (value: string) => {
     if (value === '오름차순') {
-      navigate(`/filter?sort=timeAndDate`)
       searchParams.set('sorts', 'timeAndDate')
       setTimeName('내림차순')
     } else {
-      navigate('/')
       searchParams.set('time', '')
       setTimeName('오름차순')
     }
@@ -47,11 +43,16 @@ function TableItem({ tableData }: ITableList) {
 
   const TrueChangeHandler = useCallback(() => {
     if (trueName === 'ALL') {
-      navigate(`/filter?sort=${sortname}&status=${trueName}`)
+      // navigate(`/filter?sort=${sortname}&status=${trueName}`)
+      searchParams.set('status', 'ALL')
     } else {
-      navigate(`/filter?sort=${sortname}&status=${trueName}`)
+      // navigate(`/filter?sort=${sortname}&status=${trueName}`)
+      console.log(trueName)
+      searchParams.set('status', trueName)
+      console.log(searchParams.get('status'))
+      setSearchParams(searchParams)
     }
-  }, [navigate, sortname, trueName])
+  }, [searchParams, setSearchParams, trueName])
 
   useEffect(() => {
     TrueChangeHandler()
