@@ -77,7 +77,6 @@ npm run test
         - url search params 예시 : ?page=1&name=baek&status=all&sort_by=id_DESC
       ii. 필터링 요소 : 페이지 번호, 주문 상태, 아이디
 
-
 ### 2. 페이지네이션
 
     a. pagination-react-js 라이브러리 사용
